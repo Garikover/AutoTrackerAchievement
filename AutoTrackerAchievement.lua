@@ -1904,7 +1904,7 @@ local GetAchievementList = {
 		['Suramar'] = {11265,10669,11260,},
 		['Dalaran (Legion)'] = {11066,},
 		['Broken Shore'] = {11681,11543,11841,11802,11731,11737,11735,11732,11738,11736},
-		['Mac\'Aree'] = {12084,12101,12102,12103,12104,12069,12074,12077,12078,12028,},
+		['Eredath'] = {12084,12101,12102,12103,12104,12069,12074,12077,12078,12028,},
 		['Antoran Wastes'] = {12084,12101,12102,12103,12104,12069,12074,12077,12078,12028,},
 		['Krokuun'] = {12084,12101,12102,12103,12104,12069,12074,12077,12078,12028,},
 		['Argus'] = {12084,12101,12102,12103,12104,12069,12074,12077,12078,12028,},
@@ -1937,7 +1937,7 @@ local GetAchievementList = {
 		['Nazmir'] = {12942,13048,13023,12561,12771,},
 		['Zuldazar'] = {12944,13048,13035,12559,12851,},
 		['Vol\'dun'] = {12943,13011,12560,12849,},
-		['Mechagon'] = {13776,13489,13470,13556,13479,13708,13625,13477,13474,13476,13693,13473,13478,13475,13482,13695},
+		['Mechagon Island'] = {13776,13489,13470,13556,13479,13708,13625,13477,13474,13476,13693,13473,13478,13475,13482,13695},
 		['Nazjatar'] = {13712,13699,13549,13691,13626,13836,13692,13715,13713,13720,13722,13694,13690,13635,13695,},
 		['Uldum (N\'Zoth)'] = {14159,14158,14160,},
 		['Vale of Eternal Blossoms (N\'Zoth)'] = {14159,14158,14160,},
@@ -2281,14 +2281,13 @@ function AchievementListConstructor()
 	elseif 	difficulty == 3 or difficulty == 4 or difficulty == 5 or difficulty == 6 then
 		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['NM'])
 		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['HM'])
-		ListeHF = concatArray(ListeHF, GetAchievementList[IdZone][((difficulty == 3 or difficulty == 5) and '10' or '25')])
+		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName][((difficulty == 3 or difficulty == 5) and '10' or '25')])
 
 	-- Mythic dungeons/raid
 	elseif difficulty == 16 or difficulty == 23 then
 		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['NM'])
 		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['HM'])
 		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['MM'])
-		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName][((difficulty == 3 or difficulty == 5) and '10' or '25')])
 
 	-- Raid (flex, normal or heroic)
 	elseif difficulty == 14 or difficulty == 15 then
