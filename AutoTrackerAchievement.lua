@@ -2002,7 +2002,6 @@ local GetAchievementList = {
 		['Castle Nathria'] = {['NM'] = {14293, 14608, 14610, 14294, 14525, 14376, 14524, 14619, 14617, 14523,}, }, -- Chateau Nathria
 		['Sepulcher of the First Ones'] = {['NM'] = {15399, 15492, 15397, 15494, 15416, 15400, 15419, 15401, 15418, 15398, 15396, 15315, 15493, 15381, 15386, 15417, 15478, 15490,}, }, -- Chateau Nathria
 
-
 }
 
 local GetFactionAchievementList = {
