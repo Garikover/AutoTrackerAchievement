@@ -1621,6 +1621,7 @@ local GetMapName = {
 	[1967] = 'Torghast',
 	[1968] = 'Torghast',
 	[1969] = 'Torghast',
+	[1970] = 'Zereth Mortis',
 	[1971] = 'Skyhold',
 	[1974] = 'Torghast',
 	[1975] = 'Torghast',
@@ -1663,6 +1664,23 @@ local GetMapName = {
 	[2017] = 'Spires of Ascension',
 	[2018] = 'Spires of Ascension',
 	[2019] = 'Torghast',
+	[2027] = 'Zereth Mortis',
+	[2028] = 'Zereth Mortis',
+	[2029] = 'Zereth Mortis',
+	[2030] = 'Zereth Mortis',
+	[2031] = 'Zereth Mortis',
+	[2042] = 'Oribos',
+	[2046] = 'Zereth Mortis',
+	[2047] = 'Sepulcher of the First Ones',
+	[2048] = 'Sepulcher of the First Ones',
+	[2049] = 'Sepulcher of the First Ones',
+	[2050] = 'Sepulcher of the First Ones',
+	[2051] = 'Sepulcher of the First Ones',
+	[2052] = 'Sepulcher of the First Ones',
+	[2055] = 'Zereth Mortis',
+	[2059] = 'Zereth Mortis',
+	[2061] = 'Sepulcher of the First Ones',
+	[2066] = 'Zereth Mortis',
 }
 	
 local GetCategorie = {
@@ -1903,7 +1921,7 @@ local GetAchievementList = {
 		['Stormheim'] = {11263,10668,11259,},
 		['Suramar'] = {11265,10669,11260,},
 		['Dalaran (Legion)'] = {11066,},
-		['Broken Shore'] = {11681,11543,11841,11802,11731,11737,11735,11732,11738,11736},
+		['Broken Shore'] = {11681,11543,11841,11802,11731,11737,11735,11732,11738,11736,11607},
 		['Eredath'] = {12084,12101,12102,12103,12104,12069,12074,12077,12078,12028,},
 		['Antoran Wastes'] = {12084,12101,12102,12103,12104,12069,12074,12077,12078,12028,},
 		['Krokuun'] = {12084,12101,12102,12103,12104,12069,12074,12077,12078,12028,},
@@ -1968,6 +1986,7 @@ local GetAchievementList = {
 		['Ardenweald'] = {14304, 14313, 14788, 14779, 14353, 14309, 14774,},
 		['Revendreth'] = {14306, 14798, 14314, 14276, 14310, 14771, 13878, 14856, 14512,},
 		['Torghast'] = {15054, 15043, 14778, 15089, 15093, 15095, 15105, 14468, 14570, 15096, 14498, 15327, 15067, 14469, 14809, 15094, 15092, 15091, 14471, 14470, 14483, 14463, 14493, 15076, 14776, 14478, 14568, 14810, 14569, 14473, 15068, 15075, 14472, 14488, 14773, 14571, 14808, 14521, 14848,},
+		['Zereth Mortis'] = {15509, 15229, 15392, 15331, 15502, 15514, 15513, 15391, 15224, 15512, 15542, 15406, 15407, 15411, 15410},
 		-- Dungeons
 		['Plaguefall'] = {['MM'] = {14415, 14296, 14347, 14292, 14369, 14414,},},
 		['Tazavesh'] = {['MM'] = {15178, 15190, 15179, 15109, 15106, 15177,},},
@@ -1981,6 +2000,8 @@ local GetAchievementList = {
 		-- Raid
 		['Sanctum of Domination'] = {['NM'] = {15065, 15058, 15132, 14998, 15126, 15124, 15123, 15122, 15125, 15133, 15003, 15108, 15105, 15131,}, }, -- Sanctum de Domination
 		['Castle Nathria'] = {['NM'] = {14293, 14608, 14610, 14294, 14525, 14376, 14524, 14619, 14617, 14523,}, }, -- Chateau Nathria
+		['Sepulcher of the First Ones'] = {['NM'] = {15399, 15492, 15397, 15494, 15416, 15400, 15419, 15401, 15418, 15398, 15396, 15315, 15493, 15381, 15386, 15417, 15478, 15490,}, }, -- Chateau Nathria
+
 
 }
 
