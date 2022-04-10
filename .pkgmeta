@@ -1,0 +1,6 @@
+package-as: AutoTrackerAchievement
+
+ignore:
+- CHANGELOG.txt
+
+manual-changelog: CHANGELOG.txt

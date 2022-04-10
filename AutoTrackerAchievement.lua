@@ -9,6 +9,9 @@ local AutoTrackerAchievementDB_Defaut = {
 	["region"] = true,
 	["dungeon"] = true,
 	["progressBar"] = true,
+	["progressBarREF"] = "CENTER",
+	["progressBarX"] = 0,
+	["progressBarY"] = -200,
 	["defaut"] = true,
 	["defautliste"] = "",
 	["Favoris"] = {},
@@ -2026,24 +2029,28 @@ local GetFactionAchievementList = {
 --      FRAME
 -- ////////////////
 
-function eventHandler(self, event, arg1,...)
+function eventHandler(self, event, ...)
+
 	AtaLocalisation(GetLocale())
-	if arg1 == "AutoTrackerAchievement" and event == "VARIABLES_LOADED" then
+	if event == "VARIABLES_LOADED" then
 		if AutoTrackerAchievementDB == nil then
 			AutoTrackerAchievementDB = AutoTrackerAchievementDB_Defaut
 		else
-			AutoTrackerAchievementDB_temp = AutoTrackerAchievementDB
-			AutoTrackerAchievementDB = AutoTrackerAchievementDB_Defaut
+			local AutoTrackerAchievementDB_temp = AutoTrackerAchievementDB
+			AutoTrackerAchievementDB = {}
 			for key,value in pairs(AutoTrackerAchievementDB_Defaut) do
-				if AutoTrackerAchievementDB_temp[key] ~= nil then AutoTrackerAchievementDB[key] = AutoTrackerAchievementDB_temp[key] end
+				if AutoTrackerAchievementDB_temp[key] ~= nil then
+					AutoTrackerAchievementDB[key] = AutoTrackerAchievementDB_temp[key]
+				elseif AutoTrackerAchievementDB_Defaut[key] ~= nil then
+					AutoTrackerAchievementDB[key] = AutoTrackerAchievementDB_Defaut[key]
+				end
 			end
 		end
-	end
-	DebugPrint("Event = " .. event)
-	if event == "PLAYER_ENTERING_WORLD" or event == "ZONE_CHANGED_NEW_AREA" then
+	elseif event == "PLAYER_ENTERING_WORLD" or event == "ZONE_CHANGED_NEW_AREA" then
 		DebugPrint("Affichage")
 		AchievementListConstructor();
 	end
+	DebugPrint("Event = " .. event)
 end
 
 local progressBar = CreateFrame("StatusBar", nil, UIParent) -- ObjectiveTrackerFrame
@@ -2052,13 +2059,18 @@ progressBar:SetStatusBarColor(0, 0.35, 0);
 progressBar:SetFrameStrata("BACKGROUND")
 progressBar:SetWidth(235)
 progressBar:SetHeight(14) -- for your Texture
-progressBar:SetPoint("CENTER", -5, -200)
 -- Drag and Drop
 progressBar:SetMovable(true)
 progressBar:EnableMouse(true)
 progressBar:RegisterForDrag("LeftButton")
 progressBar:SetScript("OnDragStart", progressBar.StartMoving)
-progressBar:SetScript("OnDragStop", progressBar.StopMovingOrSizing)
+progressBar:SetScript("OnDragStop", function(self, button)
+	self:StopMovingOrSizing();
+	point, relativeTo, relativePoint, xOfs, yOfs = progressBar:GetPoint()
+	AutoTrackerAchievementDB.progressBarREF = point
+	AutoTrackerAchievementDB.progressBarX = xOfs
+	AutoTrackerAchievementDB.progressBarY = yOfs
+end)
 -- Text
 progressBar.text = progressBar:CreateFontString(nil, "OVERLAY", "GameFontNormal");
 progressBar.text:SetFont("MORPHEUS", 8, "OUTLINE")
@@ -2091,25 +2103,25 @@ guiPanel.category1 = guiPanel:CreateFontString(nil, "ARTWORK", "GameFontHighligh
 guiPanel.category1:SetPoint("TOPLEFT", 10, select(5,guiPanel.title:GetPoint()) - 30)
 guiPanel.category1:SetText("Use Achievement detection in...")
 -- Arena checkbox
-guiPanel.arena = CreateFrame("CheckButton", "myCheckButton_GlobalName", guiPanel, "ChatConfigCheckButtonTemplate");
+guiPanel.arena = CreateFrame("CheckButton", "checkBoxArena", guiPanel, "ChatConfigCheckButtonTemplate");
 guiPanel.arena:SetPoint("TOPLEFT", 10, select(5,guiPanel.category1:GetPoint()) - 30)
 guiPanel.arena.title = guiPanel.arena:CreateFontString(nil, "ARTWORK", guiFont)
 guiPanel.arena.title:SetPoint("TOPLEFT", 25, -5)
 guiPanel.arena.title:SetText("Arena")
 -- Raid checkbox
-guiPanel.raid = CreateFrame("CheckButton", "myCheckButton_GlobalName", guiPanel, "ChatConfigCheckButtonTemplate");
+guiPanel.raid = CreateFrame("CheckButton", "checkBoxRaid", guiPanel, "ChatConfigCheckButtonTemplate");
 guiPanel.raid:SetPoint("TOPLEFT", 10, select(5,guiPanel.arena:GetPoint()) - 30)
 guiPanel.raid.title = guiPanel.raid:CreateFontString(nil, "ARTWORK", guiFont)
 guiPanel.raid.title:SetPoint("TOPLEFT", 25, -5)
 guiPanel.raid.title:SetText("Raids")
 -- Zone checkbox
-guiPanel.region = CreateFrame("CheckButton", "myCheckButton_GlobalName", guiPanel, "ChatConfigCheckButtonTemplate");
+guiPanel.region = CreateFrame("CheckButton", "checkBoxRegion", guiPanel, "ChatConfigCheckButtonTemplate");
 guiPanel.region:SetPoint("TOPLEFT", 10, select(5,guiPanel.raid:GetPoint()) - 30)
 guiPanel.region.title = guiPanel.region:CreateFontString(nil, "ARTWORK", guiFont)
 guiPanel.region.title:SetPoint("TOPLEFT", 25, -5)
 guiPanel.region.title:SetText("Zones")
 -- Dungeons & Scenarios checkbox
-guiPanel.dungeon = CreateFrame("CheckButton", "myCheckButton_GlobalName", guiPanel, "ChatConfigCheckButtonTemplate");
+guiPanel.dungeon = CreateFrame("CheckButton", "checkBoxDungeon", guiPanel, "ChatConfigCheckButtonTemplate");
 guiPanel.dungeon:SetPoint("TOPLEFT", 10, select(5,guiPanel.region:GetPoint()) - 30)
 guiPanel.dungeon.title = guiPanel.dungeon:CreateFontString(nil, "ARTWORK", guiFont)
 guiPanel.dungeon.title:SetPoint("TOPLEFT", 25, -5)
@@ -2120,11 +2132,23 @@ guiPanel.category2 = guiPanel:CreateFontString(nil, "ARTWORK", "GameFontHighligh
 guiPanel.category2:SetPoint("TOPLEFT", 10, select(5,guiPanel.dungeon:GetPoint()) - 40)
 guiPanel.category2:SetText("Options...")
 -- Option ProgressBar
-guiPanel.progressBar = CreateFrame("CheckButton", "myCheckButton_GlobalName", guiPanel, "ChatConfigCheckButtonTemplate");
+guiPanel.progressBar = CreateFrame("CheckButton", "checkBoxProgressBar", guiPanel, "ChatConfigCheckButtonTemplate");
 guiPanel.progressBar:SetPoint("TOPLEFT", 10, select(5,guiPanel.category2:GetPoint()) - 30)
 guiPanel.progressBar.title = guiPanel.progressBar:CreateFontString(nil, "ARTWORK", guiFont)
 guiPanel.progressBar.title:SetPoint("TOPLEFT", 25, -5)
 guiPanel.progressBar.title:SetText("Progress Bar")
+-- Reset ProgressBar progressBarPosition
+guiPanel.progressBarPositionReset = CreateFrame("Button", "progressBarResetPositionButton", guiPanel, "UIPanelButtonTemplate");
+guiPanel.progressBarPositionReset:SetPoint("TOPLEFT", 200, select(5,guiPanel.progressBar:GetPoint()))
+guiPanel.progressBarPositionReset:SetWidth(100)
+guiPanel.progressBarPositionReset:SetScript("OnClick", function(self)
+	AutoTrackerAchievementDB.progressBarREF = AutoTrackerAchievementDB_Defaut.progressBarREF
+	AutoTrackerAchievementDB.progressBarX = AutoTrackerAchievementDB_Defaut.progressBarX
+	AutoTrackerAchievementDB.progressBarY = AutoTrackerAchievementDB_Defaut.progressBarY
+	progressBar:ClearAllPoints()
+	progressBar:SetPoint(AutoTrackerAchievementDB_Defaut.progressBarREF,AutoTrackerAchievementDB_Defaut.progressBarX,AutoTrackerAchievementDB_Defaut.progressBarY)
+end)
+guiPanel.progressBarPositionReset:SetText("Reset Position")
 
 InterfaceOptions_AddCategory(guiPanel)
 
@@ -2168,7 +2192,7 @@ function AtaCommand(msg)
 			AutoTrackerAchievementDB["debug"] = (AutoTrackerAchievementDB["debug"] == false and true or false);
 			print("Ata Debug mode : ",AutoTrackerAchievementDB["debug"]);
 		end
-	elseif msg == 'test' then CheckTest()
+	elseif msg == 'test' then
 	elseif msg == 'check' then CheckBestRaid()
 	elseif msg == 'reset' then AutoTrackerAchievementDB = AutoTrackerAchievementDB_Defaut;
 	elseif msg == 'get' then AchievementListConstructor()
@@ -2221,8 +2245,6 @@ function LoadTrackList(msg)
 	if AutoTrackerAchievementDB["Favoris"][name] ~= nil then
 		Liste = AutoTrackerAchievementDB["Favoris"][name];
 		DisplayAchievementsList(Liste);
-	else
-		print(L["Pas de liste de ce nom"]);
 	end
 end
 function DeleteTrackList(msg)
@@ -2373,9 +2395,11 @@ end
 
 function UpdateProgressBar(c, t)
 	DebugPrint("Update ProgressBar")
+	progressBar:ClearAllPoints()
+	progressBar:SetPoint(AutoTrackerAchievementDB.progressBarREF, AutoTrackerAchievementDB.progressBarX, AutoTrackerAchievementDB.progressBarY)
 	if AutoTrackerAchievementDB['progressBar'] == true then
 		if t == 0 then
-			progressBar:Hide()
+			progressBar:Show()
 		elseif c == t then
 			progressBar.text:SetText("Achievements : full complete")
 			progressBar:SetMinMaxValues(0,1)
