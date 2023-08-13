@@ -1,7 +1,7 @@
 ## Title: AutoTrackerAchievement
-## Version: 9.2.0
+## Version: 10.1.7
 ## Author: Garikover
-## Interface: 90200
+## Interface: 100107
 ## Notes-frFR: Suivi auto des HF selon la zone
 ## Notes-enEN: Automatically add in the tracklist achievements of the area
 ## SavedVariables: AutoTrackerAchievementDB
