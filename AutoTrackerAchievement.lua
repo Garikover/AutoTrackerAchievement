@@ -1619,8 +1619,8 @@ local GetMapName = {
 	[2011] = 'Torghast',
 	[2012] = 'Torghast',
 	[2016] = 'Tazavesh, the Veiled Market',
-	[2017] = 'Spires of Ascension',
-	[2018] = 'Spires of Ascension',
+	[2017] = 'Spires Of Ascension',
+	[2018] = 'Spires Of Ascension',
 	[2019] = 'Torghast',
 	[2027] = 'Zereth Mortis',
 	[2028] = 'Zereth Mortis',
@@ -1869,7 +1869,7 @@ local GetAchievementList = {
 	-- Raid
 	['Highmaul'] = {['NM'] = {8948,8947,8974,8958,8975,8976,8977,},},
 	['Blackrock Foundry'] = {['NM'] = {8979,8980,8930,8983,8982,8978,8929,8981,8984,8952,},},
-	['Hellfire Citadel'] = {['NM'] = {10013,10012,10020,10087,10073,9979,10057,10030,9989,10086,10026,9988,9972,},},
+	['Hellfire Citadel'] = {['NM'] = {10013,10012,10054,10087,10073,9979,10057,10030,9989,10086,10026,9988,9972,},},
 
 	-- LEGION
 	-- Régions
@@ -1953,20 +1953,22 @@ local GetAchievementList = {
 	-- SHADOWLANDS
 	-- Régions
 	['The Maw'] = {15054, 14738, 14761, 14943, 14744, 14742, 14660, 14746, 14747, 14663, 14743, 14659, 14658, 14745, 15001, 15035, 15044, 15042, 15036, 15039, 15000, 15034, 15033, 15032},
-	['Bastion'] = {14737, 14311, 14801, 14307, 14851, 14303, 14514,},
+	['Bastion'] = {14339, 14737, 14311, 14801, 14307, 14851, 14303, 14514,},
 	['Maldraxxus'] = {14802, 14312, 14308, 14799, 14305, 14513,},
 	['Ardenweald'] = {14304, 14313, 14788, 14779, 14353, 14309, 14774,},
 	['Revendreth'] = {14306, 14798, 14314, 14276, 14310, 14771, 13878, 14856, 14512,},
 	['Torghast'] = {15054, 15043, 14778, 15089, 15093, 15095, 15105, 14468, 14570, 15096, 14498, 15327, 15067, 14469, 14809, 15094, 15092, 15091, 14471, 14470, 14483, 14463, 14493, 15076, 14776, 14478, 14568, 14810, 14569, 14473, 15068, 15075, 14472, 14488, 14773, 14571, 14808, 14521, 14848,},
 	['Korthia'] = {15107, 15066, 15099, 15053, 15055, 15056, 15057},
 	['Zereth Mortis'] = {15509, 15229, 15392, 15331, 15502, 15514, 15513, 15391, 15224, 15512, 15542, 15406, 15407, 15411, 15410},
+	-- Congregations
+	--['Ascension Coliseum'] = {14502,14851,14853,14854,14856,14857,14858,14859,14860,14861,14862,14863,14864,14865,14866,},
 	-- Dungeons
 	['Plaguefall'] = {['MM'] = {14415, 14296, 14347, 14292, 14369, 14414,},},
 	['Tazavesh'] = {['MM'] = {15178, 15190, 15179, 15109, 15106, 15177,},},
 	['Sanguine Depths'] = {['MM'] = {14289, 14199, 14290, 14286, 14197, 14198,},},
-	['The Necrotic Wake'] = {['MM'] = {14368, 14295, 14320, 14285, 14366, 14367,},},
+	['The Necrotic Wake'] = {['NM'] = {14339,}, ['MM'] = {14368, 14295, 14320, 14285, 14366, 14367,},},
 	['Mists of Tirna Scithe'] = {['MM'] = {14413, 14291, 14375, 14503, 14412, 14371,},},
-	['Spires of Ascension'] = {['MM'] = {14327, 14325, 14323, 14331, 14324, 14326,},},
+	['Spires Of Ascension'] = {['NM'] = {14339,}, ['MM'] = {14327, 14325, 14323, 14331, 14324, 14326,},},
 	['De Other Side'] = {['MM'] = {14409, 14354, 14606, 14374, 14373, 14408,},},
 	['Halls of Atonement'] = {['MM'] = {14567, 14411, 14352, 14284, 14370, 14410,},},
 	['Theater of Pain'] = {['MM'] = {14417, 14607, 14533, 14297, 14372, 14416,},},
@@ -2030,8 +2032,8 @@ local GetFactionAchievementList = {
 -- ////////////////
 
 function eventHandler(self, event, ...)
-
 	AtaLocalisation(GetLocale())
+	DebugPrint('ATAe = ' .. event)
 	if event == "VARIABLES_LOADED" then
 		if AutoTrackerAchievementDB == nil then
 			AutoTrackerAchievementDB = AutoTrackerAchievementDB_Defaut
@@ -2047,10 +2049,10 @@ function eventHandler(self, event, ...)
 			end
 		end
 	elseif event == "PLAYER_ENTERING_WORLD" or event == "ZONE_CHANGED_NEW_AREA" then
-		DebugPrint("Affichage")
 		AchievementListConstructor();
+		GetItemsList(GetSetsList());
+	--elseif event == "LOOT_CLOSED" then GetGearList()
 	end
-	DebugPrint("Event = " .. event)
 end
 
 local progressBar = CreateFrame("StatusBar", nil, UIParent) -- ObjectiveTrackerFrame
@@ -2089,10 +2091,36 @@ progressBar:RegisterEvent("ZONE_CHANGED_NEW_AREA"); -- Travel
 --progressBar:RegisterEvent("ZONE_CHANGED"); -- Travel
 progressBar:RegisterEvent("ACHIEVEMENT_EARNED"); -- Update
 progressBar:RegisterEvent("QUEST_ACCEPTED");
+--progressBar:RegisterEvent("LOOT_CLOSED");
 progressBar:SetScript("OnEvent", eventHandler);
 progressBar:Hide()
 
-local guiFont = "GameFontHighlight"
+local stuffBar = CreateFrame("ScrollFrame", nil, progressBar) -- ObjectiveTrackerFrame
+stuffBar:Hide()
+
+function UpdateProgressBar(c, t)
+	DebugPrint("Update ProgressBar : " .. c .. "/" .. t )
+	if AutoTrackerAchievementDB['progressBar'] == true then
+		progressBar:ClearAllPoints()
+		progressBar:SetPoint(AutoTrackerAchievementDB.progressBarREF, AutoTrackerAchievementDB.progressBarX, AutoTrackerAchievementDB.progressBarY)
+		local mapName = GetZoneText()
+		if t == 0 then
+			progressBar.text:SetText(mapName .. " : none")
+			progressBar:Show()
+		elseif c == t then
+			progressBar.text:SetText(mapName .. " : complete")
+			progressBar:SetMinMaxValues(0,1)
+			progressBar:SetValue(1)
+			progressBar:Show()
+		else
+			progressBar:SetMinMaxValues(0,t)
+			progressBar:SetValue(c)
+			progressBar.text:SetText(mapName .." : " .. c .. "/" .. t)
+			progressBar:Show()
+		end
+	end
+end
+
 local guiPanel = CreateFrame("Frame")
 guiPanel.name = "AutoTrackerAchievement"              -- see panel fields
 guiPanel.title = guiPanel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
@@ -2105,25 +2133,25 @@ guiPanel.category1:SetText("Use Achievement detection in...")
 -- Arena checkbox
 guiPanel.arena = CreateFrame("CheckButton", "checkBoxArena", guiPanel, "ChatConfigCheckButtonTemplate");
 guiPanel.arena:SetPoint("TOPLEFT", 10, select(5,guiPanel.category1:GetPoint()) - 30)
-guiPanel.arena.title = guiPanel.arena:CreateFontString(nil, "ARTWORK", guiFont)
+guiPanel.arena.title = guiPanel.arena:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 guiPanel.arena.title:SetPoint("TOPLEFT", 25, -5)
 guiPanel.arena.title:SetText("Arena")
 -- Raid checkbox
 guiPanel.raid = CreateFrame("CheckButton", "checkBoxRaid", guiPanel, "ChatConfigCheckButtonTemplate");
 guiPanel.raid:SetPoint("TOPLEFT", 10, select(5,guiPanel.arena:GetPoint()) - 30)
-guiPanel.raid.title = guiPanel.raid:CreateFontString(nil, "ARTWORK", guiFont)
+guiPanel.raid.title = guiPanel.raid:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 guiPanel.raid.title:SetPoint("TOPLEFT", 25, -5)
 guiPanel.raid.title:SetText("Raids")
 -- Zone checkbox
 guiPanel.region = CreateFrame("CheckButton", "checkBoxRegion", guiPanel, "ChatConfigCheckButtonTemplate");
 guiPanel.region:SetPoint("TOPLEFT", 10, select(5,guiPanel.raid:GetPoint()) - 30)
-guiPanel.region.title = guiPanel.region:CreateFontString(nil, "ARTWORK", guiFont)
+guiPanel.region.title = guiPanel.region:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 guiPanel.region.title:SetPoint("TOPLEFT", 25, -5)
 guiPanel.region.title:SetText("Zones")
 -- Dungeons & Scenarios checkbox
 guiPanel.dungeon = CreateFrame("CheckButton", "checkBoxDungeon", guiPanel, "ChatConfigCheckButtonTemplate");
 guiPanel.dungeon:SetPoint("TOPLEFT", 10, select(5,guiPanel.region:GetPoint()) - 30)
-guiPanel.dungeon.title = guiPanel.dungeon:CreateFontString(nil, "ARTWORK", guiFont)
+guiPanel.dungeon.title = guiPanel.dungeon:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 guiPanel.dungeon.title:SetPoint("TOPLEFT", 25, -5)
 guiPanel.dungeon.title:SetText("Dungeons & Scenarios")
 
@@ -2134,7 +2162,7 @@ guiPanel.category2:SetText("Options...")
 -- Option ProgressBar
 guiPanel.progressBar = CreateFrame("CheckButton", "checkBoxProgressBar", guiPanel, "ChatConfigCheckButtonTemplate");
 guiPanel.progressBar:SetPoint("TOPLEFT", 10, select(5,guiPanel.category2:GetPoint()) - 30)
-guiPanel.progressBar.title = guiPanel.progressBar:CreateFontString(nil, "ARTWORK", guiFont)
+guiPanel.progressBar.title = guiPanel.progressBar:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 guiPanel.progressBar.title:SetPoint("TOPLEFT", 25, -5)
 guiPanel.progressBar.title:SetText("Progress Bar")
 -- Reset ProgressBar progressBarPosition
@@ -2171,31 +2199,22 @@ end
 -- ////////////////
 --      SLASH
 -- ////////////////
+function setContains(set, key)
+    return set[key] ~= nil
+end
 
 function AtaCommand(msg)
-	listeHF = 0;
 	if msg == 'clean' then CleanTrackList()
-	elseif msg == 'show' then progressBar:Show()
-	elseif msg == 'hide' then progressBar:Hide()
-	elseif msg == 'help' or msg == '' then
-		print("AtA commands :");
-		print(L["ata config"]);
-		print(L["ata check"]);
-		print(L["ata clean"]);
-		print(L["ata save"]);
-		print(L["ata load"]);
-		print(L["ata defaut"]);
-		print(L["ata mount"]);
 	elseif msg == 'config' then InterfaceOptionsFrame_OpenToCategory(guiPanel);InterfaceOptionsFrame_OpenToCategory(guiPanel);
 	elseif msg == 'debug' then
 		if select(1, UnitName("player")) == "Garikover" then
 			AutoTrackerAchievementDB["debug"] = (AutoTrackerAchievementDB["debug"] == false and true or false);
 			print("Ata Debug mode : ",AutoTrackerAchievementDB["debug"]);
 		end
-	elseif msg == 'test' then
-	elseif msg == 'check' then CheckBestRaid()
+	elseif msg == 'raid' then CheckBestRaid()
 	elseif msg == 'reset' then AutoTrackerAchievementDB = AutoTrackerAchievementDB_Defaut;
 	elseif msg == 'get' then AchievementListConstructor()
+	elseif msg == 'set' then GetItemsList(GetSetsList())
 	elseif string.find(msg, 'save ') == 1 then SaveTrackList(msg);
 	elseif string.find(msg, 'load ') == 1 then LoadTrackList(msg);
 	elseif string.find(msg, 'defaut ') == 1 then DefautTrackList(msg);
@@ -2213,20 +2232,339 @@ end
 SLASH_ATA1 = '/ata';
 SlashCmdList["ATA"] = AtaCommand;
 
+-- ////////////////
+--   ACHIEVEMENTS
+-- ////////////////
+
+function AchievementListConstructor()
+
+	local difficulty = select(3, GetInstanceInfo())
+	local nbtracked = 0
+
+	nbQuests = C_QuestLog.GetNumQuestWatches()
+	CleanTrackList() -- on vire les HFs
+	SaveTrackQuests() -- on vire les quêtes + sauvegarde
+	ZoneName = GetMapName[C_Map.GetBestMapForUnit("player")];
+	IdMap = C_Map.GetBestMapForUnit("player");
+
+	-- DEBUG
+	DebugPrint('-----------------------------------------')
+	DebugPrint(string.format("Map = %s (%i)", C_Map.GetMapInfo(IdMap).name, IdMap))
+	DebugPrint('Difficulté = ' .. difficulty)
+	DebugPrint('Zone = \"'.. ZoneName .. '\"')
+
+	ListeHF = GetAchievementListFromZone(ZoneName)
+
+	if ListeHF ~= nil then
+	    DebugPrint('Hfs = '.. #ListeHF)
+		tracked, hidden, completed = DisplayAchievementsList(ListeHF)
+		UpdateProgressBar(completed, #ListeHF)
+	else
+		UpdateProgressBar(0, 0)
+	end
+
+	-- Defaut si aucune quetes en suivi
+	if AutoTrackerAchievementDB["defaut"] == true and AutoTrackerAchievementDB["defautliste"] ~= 0 and difficulty == 0 and C_QuestLog.GetNumQuestWatches() == 0 and tablelength(ListeHF) == 0 then
+		if nbtracked == nil or nbtracked == 0 then LoadTrackList(AutoTrackerAchievementDB["defautliste"]) end
+	end
+
+	return ListeHF
+end
+
+function GetAchievementListFromZone(ZoneName)
+
+    local difficulty = select(3, GetInstanceInfo())
+
+    -- World (0) or Normal Dungeons (1)
+    ListeHF = nil
+    if GetFactionAchievementList[ZoneName] ~= nil then ListeHF = GetFactionAchievementList[ZoneName][UnitFactionGroup("player")] end
+
+    ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName])
+
+    if GetAchievementList[ZoneName] ~= nil then
+
+        DebugPrint('Zone = référencée')
+
+        -- Heroic (2) dungeons
+        if difficulty == 2 then
+            ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['NM'])
+            ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['HM'])
+
+            -- Raid (10 or 25, normal or heroic)
+        elseif 	difficulty == 3 or difficulty == 4 or difficulty == 5 or difficulty == 6 then
+            ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['NM'])
+            ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['HM'])
+            ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName][((difficulty == 3 or difficulty == 5) and '10' or '25')])
+
+            -- Mythic dungeons/raid
+        elseif difficulty == 16 or difficulty == 23 then
+            ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['NM'])
+            ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['HM'])
+            ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['MM'])
+
+            -- Raid (flex, normal or heroic)
+        elseif difficulty == 14 or difficulty == 15 then
+            ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['NM'])
+        end
+    else
+        DebugPrint('Zone = non référencée')
+    end
+
+    ListeHF = concatArray(ListeHF, GetAchievementListFromCategory(GetCategorie[IdZone]))
+
+    return ListeHF
+end
+
+function GetAchievementListFromCategory(cat)
+	if cat ~= nil then
+		local list = {}
+		for j = 1, GetCategoryNumAchievements(cat) do
+			list[j] = select(1,GetAchievementInfo(cat,j))
+		end
+		return list
+	else
+		return nil
+	end
+end
+
+function DisplayAchievementsList(list)
+	local tracked = 0
+	local hidden = 0
+	local completed = 0
+	for i=1,#list do
+		if GetAchievementInfo(list[i]) ~= nil then
+			DebugPrint(i .. ' - ' .. GetAchievementLink(list[i]) .. ' (' .. list[i] .. ')')
+			if not select(4, GetAchievementInfo(list[i]))then
+				if tracked < 10 then
+					C_ContentTracking.StartTracking(2, list[i])
+					tracked = tracked +1
+				else
+					hidden = hidden +1
+				end
+			else
+				completed = completed + 1
+			end
+		end
+	end
+	return tracked, hidden, completed
+end
+
+function CheckBestRaid()
+	PrintMessage(AtaColor.Yellow .. "Check best raid to Farm")
+
+	local diff = {'10','25','NM','HM','MM'}
+	local list = {}
+	local i = 1
+	for mapName, tableHF in pairs(GetAchievementList) do
+		for keyDiff, difficulty in pairs(diff) do
+			if tableHF[difficulty] ~= nil then
+				nb = 0
+				for key2,achievementID in pairs(tableHF[difficulty]) do
+					if select(4, GetAchievementInfo(achievementID)) == false then nb = nb + 1 end
+				end
+				if nb > 0 then
+					list[i] = {mapName, nb, difficulty}
+					i = i +1
+				end
+			end
+		end
+	end
+
+	table.sort(list, function (left, right)
+		return left[2] > right[2]
+	end)
+
+	for key, value in pairs(list) do
+		PrintMessage(AtaColor.Red .. value[2] .. '|r ' .. AtaColor.Yellow .. value[1] .. '|r ' .. '[' .. value[3] .. ']')
+	end
+
+end
+
+-- ////////////////
+--    ARMOR SETS
+-- ////////////////
+
+function tableHasKey(table,key)
+    return table[key] ~= nil
+end
+
+function GetSetsList()
+    local sets = {}
+    local new_sets = {}
+    for _, set in ipairs(C_TransmogSets.GetAllSets()) do
+        if set.classMask == select(3, UnitClass("Player")) and set.collected == false then
+            sets[set.setID] = {["name"] = set.name, ["setID"] = set.setID,["collected"] = 0, ["notCollected"] = 0,}
+            for i=0, 19 do
+                local isCollected = nil
+                for _, source in ipairs(C_TransmogSets.GetSourcesForSlot(set.setID, i)) do
+                    if isCollected == nil then isCollected = false end
+                    if source.isCollected == true then isCollected = true; break end
+                end
+                if isCollected ~= nil then
+                    if isCollected == true then sets[set.setID]['collected'] = sets[set.setID]['collected'] + 1 else sets[set.setID]['notCollected'] = sets[set.setID]['notCollected'] + 1 end
+                end
+            end
+        end
+    end
+    for setID, slot in pairs(sets) do
+        if slot.notCollected > 0 then
+            table.insert(new_sets, {["name"] = slot.name, ["setID"] = slot.setID, ["collected"] = slot.collected, ["notCollected"] = slot.notCollected, ["left"] = (slot.collected * 100 / (slot.collected + slot.notCollected)) })
+        end
+    end
+    table.sort(new_sets, function (k1, k2) return k1.left > k2.left end )
+    return new_sets
+end
+
+function GetItemsList(sets)
+
+    stuffBar:Show()
+	for i = 1, #stuffBar do stuffBar[i]:Hide() end
+
+	local ind = 0
+    local listStuff = {}
+    local listInstance = {}
+
+	for _, set in pairs(sets) do
+        for j, source in ipairs(C_TransmogSets.GetAllSourceIDs(set.setID)) do
+            local categoryID, visualID, canEnchant, icon, isCollected, itemLink, transmogLink, itemType, itemSubTypeIndex = C_TransmogCollection.GetAppearanceSourceInfo(source)
+
+            -- itemType => 1 normal, 3 pvp, nil legendary
+            if isCollected == false and itemType == 1 then
+
+                local drops = C_TransmogCollection.GetAppearanceSourceDrops(source)
+                local itemDifficulty = tonumber(string.match(itemLink, 'item:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:([^:]*):'))
+
+                if drops ~= nil then
+                    for k=1, #drops do
+                        local drop = drops[k]
+
+                        if #drop.difficulties == 0 then
+                            if itemDifficulty == nil then drop.difficulties[1] = "Normal" else drop.difficulties[1] = itemDifficulty end
+                        end
+
+                        for l=1,#drop.difficulties do
+                            local difficulty = drop.difficulties[l]
+                            local instance = drop.instance
+                            local boss = drop.encounter
+
+                            if IsInstanceLocked(i1) == false and SameMap(instance) == true then
+                                if listStuff[difficulty] == nil then listStuff[difficulty] = {} end
+                                if listStuff[difficulty][boss] == nil then listStuff[difficulty][boss] = {["q"] = 0, ["name"] = set.name} end
+                                listStuff[difficulty][boss]["q"] = listStuff[difficulty][boss]["q"] + 1
+                            end
+
+                            if listInstance[instance] == nil then listInstance[instance] = {} end
+                            if listInstance[instance][difficulty] == nil then listInstance[instance][difficulty] = {["q"] = 0, ["name"] = set.name} end
+                            listInstance[instance][difficulty]["q"] = listInstance[instance][difficulty]["q"] + 1
+                        end
+                    end
+                end
+            end
+        end
+	end
+
+    if GetTableLng(listStuff) == 0 then
+
+        for i1, v1 in pairs(listInstance) do
+
+
+            if IsInstanceLocked(i1) == true then
+
+                --stuffBar[ind] = progressBar:CreateFontString(nil, "OVERLAY", "GameFontRed");
+
+            elseif IsInstanceLocked(i1) == false then
+                ind = ind + 1
+                stuffBar[ind] = progressBar:CreateFontString(nil, "OVERLAY", "GameFontNormal");
+                stuffBar[ind]:SetFont("MORPHEUS", 8, "OUTLINE")
+                stuffBar[ind]:SetPoint("TOPLEFT", 0, -15*ind-5);
+                stuffBar[ind]:SetText(i1);
+
+                text = ""
+                for i2, v2 in pairs(v1) do
+                    text = text .. i2 .. " (" .. v2.q .. ") "
+                end
+
+                ind = ind + 1
+                stuffBar[ind] = progressBar:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+                stuffBar[ind]:SetFont("MORPHEUS", 8, "OUTLINE")
+                stuffBar[ind]:SetPoint("TOPLEFT", 0, -15*ind-5);
+                stuffBar[ind]:SetText(" - " .. text);
+
+            end
+
+
+        end
+
+    else
+
+        for i1, v1 in pairs(listStuff) do
+            ind = ind + 1
+            stuffBar[ind] = progressBar:CreateFontString(nil, "OVERLAY", "GameFontNormal");
+            stuffBar[ind]:SetFont("MORPHEUS", 8, "OUTLINE")
+            stuffBar[ind]:SetPoint("TOPLEFT", 0, -15*ind-5);
+            stuffBar[ind]:SetText(i1);
+            text = ""
+            for i2, v2 in pairs(v1) do
+                ind = ind + 1
+                stuffBar[ind] = progressBar:CreateFontString(nil, "OVERLAY", "GameFontHighlight");
+                stuffBar[ind]:SetFont("MORPHEUS", 8, "OUTLINE")
+                stuffBar[ind]:SetPoint("TOPLEFT", 0, -15*ind-5);
+                stuffBar[ind]:SetText(" - " .. i2 .. " (" .. v2.q .. ")");
+            end
+        end
+
+    end
+
+
+    --offset = offset + stuffBar[ind]:GetStringWidth()
+    --GameFontRed
+
+end
+
+function SameMap(s)
+    local instance = string.gsub(string.gsub(s, "’", ""), "", "")
+    local zoneName = string.gsub(string.gsub(GetZoneText(), "’", ""), "'", "")
+    if string.find(instance, zoneName) ~= nil or string.find(zoneName, instance) ~= nil then
+        return true
+    else
+        return false
+    end
+end
+
+function IsInstanceLocked(s)
+    for i=1, GetNumSavedInstances() do
+        local name, id, reset, difficulty, locked, extended, instanceIDMostSig, isRaid, maxPlayers, difficultyName, numEncounters, encounterProgress = GetSavedInstanceInfo(i)
+
+        if s == name and locked == true then
+            return true
+        end
+    end
+
+    return false
+end
+
+function GetTableLng(tbl)
+  local getN = 0
+  for n in pairs(tbl) do
+    getN = getN + 1
+  end
+  return getN
+end
 
 -- ////////////////
 --    FUNCTIONS
 -- ////////////////
 
+-- Tracking des achievements
 function CleanTrackList()
-	local achievlisted = {GetTrackedAchievements()};
-	for i=1,#achievlisted do
-		RemoveTrackedAchievement(achievlisted[i])
-	end
+    local achievlisted = C_ContentTracking.GetTrackedIDs(2)
+    for i=1,#achievlisted do
+        C_ContentTracking.StopTracking(2, achievlisted[i])
+    end
 	DebugPrint("Nettoyage liste")
 end
 function SaveTrackList(msg)
-	local achievlisted = {GetTrackedAchievements()};
+	local achievlisted = C_ContentTracking.GetTrackedIDs(2)
 	name = string.gsub(msg, "save ", "");
 
 	if AutoTrackerAchievementDB["debug"] == true and name ~= "" then
@@ -2289,216 +2627,6 @@ function LoadTrackQuests()
 	listequetes = {}
 end
 
--- FONCTION PRINCIPALE
-
-function AchievementListConstructor()
-
-	local difficulty = select(3, GetInstanceInfo())
-	local nbtracked = 0
-
-	nbQuests = C_QuestLog.GetNumQuestWatches()
-	CleanTrackList() -- on vire les HFs
-	SaveTrackQuests() -- on vire les quêtes + sauvegarde
-	ZoneName = GetMapName[C_Map.GetBestMapForUnit("player")];
-	IdMap = C_Map.GetBestMapForUnit("player");
-
-	-- DEBUG
-	DebugPrint('-----------------------------------------')
-	DebugPrint(string.format("Map = %s (%i)", C_Map.GetMapInfo(IdMap).name, IdMap))
-	DebugPrint('Difficulté = ' .. difficulty)
-	DebugPrint('Zone = '.. ZoneName)
-
-	-- World (0) or Normal Dungeons (1)
-	if GetFactionAchievementList[ZoneName] ~= nil then
-		ListeHF = GetFactionAchievementList[ZoneName][UnitFactionGroup("player")]
-	else
-		ListeHF = nil
-	end
-
-	ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName])
-
-	-- Heroic (2) dungeons
-	if difficulty == 2 then
-		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['NM'])
-		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['HM'])
-
-	-- Raid (10 or 25, normal or heroic)
-	elseif 	difficulty == 3 or difficulty == 4 or difficulty == 5 or difficulty == 6 then
-		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['NM'])
-		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['HM'])
-		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName][((difficulty == 3 or difficulty == 5) and '10' or '25')])
-
-	-- Mythic dungeons/raid
-	elseif difficulty == 16 or difficulty == 23 then
-		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['NM'])
-		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['HM'])
-		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['MM'])
-
-	-- Raid (flex, normal or heroic)
-	elseif difficulty == 14 or difficulty == 15 then
-		ListeHF = concatArray(ListeHF, GetAchievementList[ZoneName]['NM'])
-	end
-
-	ListeHF = concatArray(ListeHF, GetAchievementListFromCategory(GetCategorie[IdZone]))
-
-	if ListeHF ~= nil then
-		tracked, hidden, completed = DisplayAchievementsList(ListeHF)
-		UpdateProgressBar(completed, #ListeHF)
-	else
-		UpdateProgressBar(0, 0)
-	end
-
-	-- Defaut si aucune quetes en suivi
-	if AutoTrackerAchievementDB["defaut"] == true and AutoTrackerAchievementDB["defautliste"] ~= 0 and difficulty == 0 and C_QuestLog.GetNumQuestWatches() == 0 and tablelength(ListeHF) == 0 then
-		if nbtracked == nil or nbtracked == 0 then LoadTrackList(AutoTrackerAchievementDB["defautliste"]) end
-	end
-end
-
-function GetAchievementListFromCategory(cat)
-	if cat ~= nil then
-		local list = {}
-		for j = 1, GetCategoryNumAchievements(cat) do
-			list[j] = select(1,GetAchievementInfo(cat,j))
-		end
-		return list
-	else
-		return nil
-	end
-end
-
--- ////////////////
---    Afficheurs
--- ////////////////
-
--- Print the incomplete achievements in specific list and and them to the tracking list
-function DisplayAchievementsList(list)
-	local tracked = 0
-	local hidden = 0
-	local completed = 0
-	for i=1,#list do
-		if GetAchievementInfo(list[i]) ~= nil then
-			DebugPrint(i .. ' - ' .. GetAchievementLink(list[i]) .. ' (' .. list[i] .. ')')
-			if not select(4, GetAchievementInfo(list[i]))then
-				if tracked < 10 then
-					AddTrackedAchievement(select(1, GetAchievementInfo(list[i])));
-					tracked = tracked +1
-				else
-					hidden = hidden +1
-				end
-			else
-				completed = completed + 1
-			end
-		end
-	end
-	return tracked, hidden, completed
-end
-
-function UpdateProgressBar(c, t)
-	DebugPrint("Update ProgressBar")
-	progressBar:ClearAllPoints()
-	progressBar:SetPoint(AutoTrackerAchievementDB.progressBarREF, AutoTrackerAchievementDB.progressBarX, AutoTrackerAchievementDB.progressBarY)
-	if AutoTrackerAchievementDB['progressBar'] == true then
-		if t == 0 then
-			progressBar:Show()
-		elseif c == t then
-			progressBar.text:SetText("Achievements : full complete")
-			progressBar:SetMinMaxValues(0,1)
-			progressBar:SetValue(1)
-			progressBar:Show()
-		else
-			progressBar:SetMinMaxValues(0,t)
-			progressBar:SetValue(c)
-			progressBar.text:SetText("Achievements : " .. c .. "/" .. t)
-			progressBar:Show()
-		end
-	end
-end
-
--- Trouver le raid le plus rentable en HF
-function CheckBestRaid()
-	PrintMessage(AtaColor.Yellow .. "Check best raid to Farm")
-
-	local diff = {'10','25','NM','HM','MM'}
-	local list = {}
-	local i = 1
-	for mapName, tableHF in pairs(GetAchievementList) do
-		for keyDiff, difficulty in pairs(diff) do
-			if tableHF[difficulty] ~= nil then
-				nb = 0
-				for key2,achievementID in pairs(tableHF[difficulty]) do
-					if select(4, GetAchievementInfo(achievementID)) == false then nb = nb + 1 end
-				end
-				if nb > 0 then
-					list[i] = {mapName, nb, difficulty}
-					i = i +1
-				end
-			end
-		end
-	end
-
-	table.sort(list, function (left, right)
-		return left[2] > right[2]
-	end)
-
-	for key, value in pairs(list) do
-		PrintMessage(AtaColor.Red .. value[2] .. '|r ' .. AtaColor.Yellow .. value[1] .. '|r ' .. '[' .. value[3] .. ']')
-	end
-
-end
-
--- Vérifier les stuffs
-function CheckSets()
-
-	local listStuff = {}
-
-	sets = C_TransmogSets.GetBaseSets();
-	for i, set in ipairs(sets) do
-
-		sources = C_TransmogSets.GetAllSourceIDs(set.setID)
-		for j, source in ipairs(sources) do
-			local categoryID, visualID, canEnchant, icon, isCollected, itemLink, transmogLink, itemType, itemSubTypeIndex = C_TransmogCollection.GetAppearanceSourceInfo(source)
-			-- itemType => 1 normal, 3 pvp, nil legendary
-			if isCollected == false and itemType == 1 then
-				local drops = C_TransmogCollection.GetAppearanceSourceDrops(source)
-				local itemID = tonumber(string.match(itemLink, 'item:([^:]*):'))
-				local itemDifficulty = tonumber(string.match(itemLink, 'item:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:([^:]*):'))
-				--print("-- " .. itemLink .. " - " .. itemType)
-				if drops ~= nil then
-					for k=1, #drops do
-						local inst = drops[k]
-
-						if #inst.difficulties == 0 then
-							if itemDifficulty == nil then inst.difficulties[1] = "Normal" else inst.difficulties[1] = itemDifficulty end
-						end
-
-						for l=1,#inst.difficulties do
-							local dif = inst.difficulties[l]
-							local instance = inst.instance
-							local boss = inst.encounter
-							if listStuff[instance] == nil then listStuff[instance] = {} end
-							if listStuff[instance][boss] == nil then listStuff[instance][boss] = {} end
-							if listStuff[instance][boss][dif] == nil then listStuff[instance][boss][dif] = 0 end
-							listStuff[instance][boss][dif] = listStuff[instance][boss][dif] + 1
-						end
-					end
-				end
-			end
-		end
-	end
-
-	for instanceName, bosses in pairs(listStuff) do
-		print(instanceName)
-		for bossName, difficulties in pairs(bosses) do
-			for diff, q in pairs(difficulties) do
-				print("---- " .. bossName .. " - " .. q .. " in " .. diff)
-			end
-		end
-	end
-
-end
-
-
---
 function PrintMessage(s)
 	print(AtaColor.Green.."ATA : |r " .. s);
 end
@@ -2524,6 +2652,7 @@ end
 -- ////////////////
 -- Langue
 -- ////////////////
+
 function AtaLocalisation(lang)
 L = {};
 	debut_ligne = "|cFFFF0000> "
