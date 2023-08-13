@@ -2051,7 +2051,6 @@ function eventHandler(self, event, ...)
 	elseif event == "PLAYER_ENTERING_WORLD" or event == "ZONE_CHANGED_NEW_AREA" then
 		AchievementListConstructor();
 		GetItemsList(GetSetsList());
-	--elseif event == "LOOT_CLOSED" then GetGearList()
 	end
 end
 
